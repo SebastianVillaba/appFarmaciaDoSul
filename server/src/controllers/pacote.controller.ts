@@ -16,7 +16,7 @@ export const consultaEntregaPacotePendiente = async (req: Request, res: Response
             inputs: [
                 {
                     name: "idSucursal",
-                    type: sql.Int,
+                    type: sql.Int(),
                     value: idSucursal
                 }
             ]
@@ -44,7 +44,7 @@ export const consultaEntregadosPacote = async (req: Request, res: Response): Pro
             inputs: [
                 {
                     name: "idSucursal",
-                    type: sql.Int,
+                    type: sql.Int(),
                     value: idSucursal
                 }
             ]
@@ -72,17 +72,17 @@ export const guardarEntregaPacote = async (req: Request, res: Response): Promise
             inputs: [
                 {
                     name: "idSucursal",
-                    type: sql.Int,
+                    type: sql.Int(),
                     value: idSucursal
                 },
                 {
                     name: "idPreVenta",
-                    type: sql.Int,
+                    type: sql.Int(),
                     value: idPreVenta
                 },
                 {
                     name: "idUsuario",
-                    type: sql.Int,
+                    type: sql.Int(),
                     value: idUsuario
                 }
             ]

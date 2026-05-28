@@ -1,14 +1,14 @@
 import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, IconButton, Typography, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import HomeIcon from '@mui/icons-material/Home';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import type { KeyboardEvent, MouseEvent } from 'react';
 
 const menuItems = [
-    { label: 'Facturación', path: '/', icon: <ReceiptIcon /> },
-    { label: 'Pedido Cliente', path: '/pedido-cliente', icon: <ShoppingCartIcon /> },
+    { label: 'Home', path: '/', icon: <HomeIcon /> },
+    { label: 'Entrega de Paquetes', path: '/pacote', icon: <LocalShippingIcon /> }
 ];
 
 const Layout = () => {
@@ -61,8 +61,8 @@ const Layout = () => {
                     onKeyDown={toggleDrawer(false)}
                 >
                     <Box sx={{ p: 2 }}>
-                        <Typography variant="h6" fontWeight="bold" color="primary">
-                            RioMar
+                        <Typography variant="h6" sx={{ fontWeight: 'bold' }} color="primary">
+                            Farmacia Do Sul
                         </Typography>
                     </Box>
                     <Divider />

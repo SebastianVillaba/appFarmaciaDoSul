@@ -3,6 +3,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 // Interface para el estado del usuario
 export interface UserState {
     idUsuario: number | null;
+    idSucursal: number | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
@@ -13,10 +14,21 @@ export interface UserLoginData {
     idSucursal: number;
 }
 
+const getSavedUser = () => {
+    try {
+        const saved = localStorage.getItem('user');
+        return saved ? JSON.parse(saved) : null;
+    } catch {
+        return null;
+    }
+};
+
+const savedUser = getSavedUser();
+
 const initialState: UserState = {
-    idUsuario: null,
-    idSucursal: null,
-    status: 'idle',
+    idUsuario: savedUser ? savedUser.id : null,
+    idSucursal: savedUser ? savedUser.idSucursal : null,
+    status: savedUser ? 'succeeded' : 'idle',
     error: null
 };
 

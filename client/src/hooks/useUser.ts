@@ -4,7 +4,7 @@ import {
     selectIdUsuario,
     //selectIdVendedor,
     // selectNombreVendedor,
-    selectIdSucursal,
+    // selectIdSucursal,
     // selectIdPersonaJur,
     // selectDsuc,
     // selectDcaja,

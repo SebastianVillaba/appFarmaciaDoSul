@@ -41,7 +41,8 @@ export default function LoginPage(): JSX.Element {
         // Guardar datos del vendedor en Redux (estado global)
         if (response.user) {
           login({
-            idUsuario: response.vendedor.idUsuario
+            idUsuario: response.user.id,
+            idSucursal: response.user.idSucursal
           });
         }
 
