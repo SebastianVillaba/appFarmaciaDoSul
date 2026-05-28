@@ -2,9 +2,11 @@ import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import type { KeyboardEvent, MouseEvent } from 'react';
+import { useUser } from '../hooks/useUser';
 
 const menuItems = [
     { label: 'Home', path: '/', icon: <HomeIcon /> },
@@ -15,6 +17,7 @@ const Layout = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const { logout } = useUser();
 
     const toggleDrawer = (open: boolean) => (event: KeyboardEvent | MouseEvent) => {
         if (event.type === 'keydown' && ((event as KeyboardEvent).key === 'Tab' || (event as KeyboardEvent).key === 'Shift')) {
@@ -25,6 +28,12 @@ const Layout = () => {
 
     const handleMenuClick = (path: string) => {
         navigate(path);
+        setDrawerOpen(false);
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
         setDrawerOpen(false);
     };
 
@@ -55,7 +64,7 @@ const Layout = () => {
                 onClose={toggleDrawer(false)}
             >
                 <Box
-                    sx={{ width: 250 }}
+                    sx={{ width: 250, display: 'flex', flexDirection: 'column', height: '100%' }}
                     role="presentation"
                     onClick={toggleDrawer(false)}
                     onKeyDown={toggleDrawer(false)}
@@ -66,26 +75,37 @@ const Layout = () => {
                         </Typography>
                     </Box>
                     <Divider />
-                    <List>
-                        {menuItems.map((item) => (
-                            <ListItem key={item.path} disablePadding>
-                                <ListItemButton
-                                    onClick={() => handleMenuClick(item.path)}
-                                    selected={location.pathname === item.path}
-                                    sx={{
-                                        '&.Mui-selected': {
-                                            backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                    <Box sx={{ flexGrow: 1 }}>
+                        <List>
+                            {menuItems.map((item) => (
+                                <ListItem key={item.path} disablePadding>
+                                    <ListItemButton
+                                        onClick={() => handleMenuClick(item.path)}
+                                        selected={location.pathname === item.path}
+                                        sx={{
+                                            '&.Mui-selected': {
+                                                backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                                                }
                                             }
-                                        }
-                                    }}
-                                >
-                                    <ListItemIcon>{item.icon}</ListItemIcon>
-                                    <ListItemText primary={item.label} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                                        }}
+                                    >
+                                        <ListItemIcon>{item.icon}</ListItemIcon>
+                                        <ListItemText primary={item.label} />
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Box>
+                    <Divider />
+                    <List>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={handleLogout} sx={{ color: 'error.main' }}>
+                                <ListItemIcon sx={{ color: 'error.main' }}><LogoutIcon /></ListItemIcon>
+                                <ListItemText primary="Cerrar Sesión" />
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </Box>
             </Drawer>
