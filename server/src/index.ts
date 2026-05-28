@@ -17,8 +17,8 @@ const httpServer = createServer(app);
 
 // Middlewares
 app.use(helmet()); // Seguridad HTTP headers
-app.use(cors()); // Habilitar CORS
 app.use(express.json()); // Parser de JSON
+app.use(cors()); // Habilitar CORS
 app.use(express.urlencoded({ extended: true })); // Parser de URL-encoded
 
 // Ruta de prueba
