@@ -287,7 +287,7 @@ export default function PacotePage() {
                   border: '1px solid rgba(25, 118, 210, 0.15)'
                 }}
               >
-                Paquete seleccionado: PreVenta Nro. <strong>{selectedPacote.idPreVenta}</strong> para el cliente <strong>{selectedPacote.Cliente || 'No especificado'}</strong> por un total de <strong>{formatCurrency(selectedPacote.Total)}</strong>.
+                Paquete seleccionado: PreVenta Nro. <strong>{selectedPacote.idPreVenta}</strong> para el cliente <strong>{selectedPacote.cliente || 'No especificado'}</strong> por un total de <strong>{formatCurrency(selectedPacote.totalVenta)}</strong>.
               </Alert>
             )}
           </Box>
@@ -482,9 +482,9 @@ export default function PacotePage() {
                     <TableBody>
                       {entregados.map((row, index) => (
                         <TableRow key={row.idPreVenta + '-entregado'} hover>
-                          <TableCell align="center" sx={{ fontWeight: 600 }}>{index + 1}</TableCell>
-                          <TableCell sx={{ fontWeight: 500 }}>{row.Cliente || '-'}</TableCell>
-                          <TableCell>{row.Factura || '-'}</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: 600 }}>{row.Nro}</TableCell>
+                          <TableCell sx={{ fontWeight: 500 }}>{row.cliente || '-'}</TableCell>
+                          <TableCell>{row.factura || '-'}</TableCell>
                           <TableCell align="center">
                             <Chip 
                               label={row.idPreVenta} 
@@ -492,19 +492,19 @@ export default function PacotePage() {
                               sx={{ fontWeight: 600, borderRadius: '6px', backgroundColor: '#e8f5e9', color: '#2e7d32', border: '1px solid #c8e6c9' }} 
                             />
                           </TableCell>
-                          <TableCell>{formatDate(row.Fecha)}</TableCell>
+                          <TableCell>{formatDate(row.fechaAlta)}</TableCell>
                           <TableCell align="right" sx={{ fontWeight: 'bold' }}>
-                            {formatCurrency(row.Total)}
+                            {formatCurrency(row.totalVenta)}
                           </TableCell>
-                          <TableCell sx={{ color: 'text.secondary' }}>{row.Vendedor || '-'}</TableCell>
+                          <TableCell sx={{ color: 'text.secondary' }}>{row.vendedor || '-'}</TableCell>
                           <TableCell sx={{ fontWeight: 500 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                               <CheckCircleIcon sx={{ fontSize: 16, color: '#4caf50' }} />
-                              {row.EntregadoPor || 'Usuario'}
+                              {row.entregaPor || 'Usuario'}
                             </Box>
                           </TableCell>
                           <TableCell sx={{ color: '#1565c0', fontWeight: 500 }}>
-                            {formatDate(row.FechaEntrega || '')}
+                            {formatDate(row.fechaEntrega || '')}
                           </TableCell>
                         </TableRow>
                       ))}

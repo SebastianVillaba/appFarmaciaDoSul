@@ -81,7 +81,7 @@ export const guardarEntregaPacote = async (req: Request, res: Response): Promise
                     value: idPreVenta
                 },
                 {
-                    name: "idUsuario",
+                    name: "idUsuarioAlta",
                     type: sql.Int(),
                     value: idUsuario
                 }
