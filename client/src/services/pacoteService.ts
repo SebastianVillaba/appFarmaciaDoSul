@@ -1,4 +1,5 @@
 import api from './api';
+import type { DetallePacote } from '../types/Pacote/Pacote.type';
 
 export interface PacotePendiente {
   idPreVenta: number;
@@ -32,6 +33,11 @@ export const pacoteService = {
     idUsuario: number;
   }): Promise<any> => {
     const response = await api.post('/pacote/guardar', payload);
+    return response.data;
+  },
+
+  getDetallePacote: async (idPreVenta: number): Promise<DetallePacote[]> => {
+    const response = await api.get<DetallePacote[]>('/pacote/detalle', { params: { idPreVenta } });
     return response.data;
   }
 };

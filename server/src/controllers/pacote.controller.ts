@@ -95,3 +95,30 @@ export const guardarEntregaPacote = async (req: Request, res: Response): Promise
     }
 }
 
+export const consultaDetallePacote = async (req: Request, res: Response): Promise<void> => {
+    const { idPreVenta } = req.query;
+
+    if (!idPreVenta) {
+        res.status(400).json({ message: "Debe seleccionar algúna preventa! Revise..." });
+        return;
+    }
+
+    try {
+        const result = await executeRequest({
+            query: `select * from [funVerDetPreventa](@idPreVenta)`,
+            isStoredProcedure: false,
+            inputs: [
+                {
+                    name: "idPreVenta",
+                    type: sql.Int(),
+                    value: idPreVenta
+                }
+            ]
+        });
+
+        res.json(result.recordset);
+    } catch (error) {
+        console.error("Error en consultaDetallePacote:", error);
+        res.status(500).json({ message: "Error en el servidor" });
+    }
+}

@@ -26,9 +26,12 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import InfoIcon from '@mui/icons-material/Info';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { useUser } from '../../hooks/useUser';
 import { pacoteService, type PacotePendiente, type PacoteEntregado } from '../../services/pacoteService';
+import { ModalDetPacote } from '../../components/ModalDetPacote';
+import type { DetallePacote } from '../../types/Pacote/Pacote.type';
 
 export default function PacotePage() {
   const { idSucursal, idUsuario } = useUser();
@@ -36,6 +39,11 @@ export default function PacotePage() {
   // Estados de datos
   const [pendientes, setPendientes] = useState<PacotePendiente[]>([]);
   const [entregados, setEntregados] = useState<PacoteEntregado[]>([]);
+  
+  // Estados para el detalle de paquete
+  const [openDetalle, setOpenDetalle] = useState(false);
+  const [detalleData, setDetalleData] = useState<DetallePacote[]>([]);
+  const [loadingDetalle, setLoadingDetalle] = useState(false);
   
   // Estados de carga
   const [loadingPendientes, setLoadingPendientes] = useState(false);
@@ -96,6 +104,20 @@ export default function PacotePage() {
     setAlert((prev) => ({ ...prev, open: false }));
   };
 
+  const handleVerDetalle = async (idPreVenta: number) => {
+    setLoadingDetalle(true);
+    try {
+      const data = await pacoteService.getDetallePacote(idPreVenta);
+      setDetalleData(data || []);
+      setOpenDetalle(true);
+    } catch (error) {
+      console.error('Error fetching details:', error);
+      showNotification('Error al obtener el detalle del paquete', 'error');
+    } finally {
+      setLoadingDetalle(false);
+    }
+  };
+
   // Acción para entregar el paquete seleccionado
   const handleEntregarPacote = async () => {
     if (!selectedPacote || !idSucursal || !idUsuario) {
@@ -131,7 +153,6 @@ export default function PacotePage() {
     if (val === undefined || val === null) return '$ 0.00';
     return `${Number(val).toLocaleString('es-PY', { style: 'currency', currency: 'PYG' })}`;
   };
-
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';
     try {
@@ -342,6 +363,7 @@ export default function PacotePage() {
                         <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Fecha/Hora</TableCell>
                         <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }} align="right">Total</TableCell>
                         <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Vendedor/a</TableCell>
+                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Acciones</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -385,6 +407,18 @@ export default function PacotePage() {
                               {formatCurrency(row.totalVenta)}
                             </TableCell>
                             <TableCell sx={{ color: 'text.secondary' }}>{row.vendedor || '-'}</TableCell>
+                            <TableCell>
+                              <IconButton 
+                                size="small" 
+                                color="primary" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleVerDetalle(row.idPreVenta);
+                                }}
+                              >
+                                <VisibilityIcon />
+                              </IconButton>
+                            </TableCell>
                           </TableRow>
                         );
                       })}
@@ -413,6 +447,13 @@ export default function PacotePage() {
           {alert.message}
         </Alert>
       </Snackbar>
+
+      {/* Modal de Detalle de Paquete */}
+      <ModalDetPacote 
+        open={openDetalle} 
+        handleCloseModal={() => setOpenDetalle(false)} 
+        detalle={detalleData} 
+      />
     </Box>
   );
 }
