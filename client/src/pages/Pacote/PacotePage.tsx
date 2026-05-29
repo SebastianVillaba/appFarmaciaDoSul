@@ -68,20 +68,6 @@ export default function PacotePage() {
     }
   }, []);
 
-  // Carga de entregados
-  const fetchEntregados = useCallback(async (sucursalId: number) => {
-    setLoadingEntregados(true);
-    try {
-      const data = await pacoteService.getPacotesEntregados(sucursalId);
-      setEntregados(data || []);
-    } catch (error) {
-      console.error('Error fetching entregados:', error);
-      showNotification('Error al cargar el historial de entregados', 'error');
-    } finally {
-      setLoadingEntregados(false);
-    }
-  }, []);
-
   // Recarga global
   const handleRefresh = useCallback(async () => {
     if (!idSucursal) return;
@@ -89,19 +75,17 @@ export default function PacotePage() {
     setSelectedPacote(null); // Limpiar selección actual
     await Promise.all([
       fetchPendientes(idSucursal),
-      fetchEntregados(idSucursal)
     ]);
     setRefreshing(false);
     showNotification('Listas actualizadas correctamente', 'info');
-  }, [idSucursal, fetchPendientes, fetchEntregados]);
+  }, [idSucursal, fetchPendientes]);
 
   // Ejecutar consultas iniciales
   useEffect(() => {
     if (idSucursal) {
       fetchPendientes(idSucursal);
-      fetchEntregados(idSucursal);
     }
-  }, [idSucursal, fetchPendientes, fetchEntregados]);
+  }, [idSucursal, fetchPendientes]);
 
   // Mostrar snackbar helper
   const showNotification = (message: string, severity: 'success' | 'error' | 'info') => {
@@ -133,7 +117,6 @@ export default function PacotePage() {
       // Recarga automática de ambas tablas
       await Promise.all([
         fetchPendientes(idSucursal),
-        fetchEntregados(idSucursal)
       ]);
     } catch (error) {
       console.error('Error guardando entrega:', error);
@@ -331,7 +314,7 @@ export default function PacotePage() {
                 />
               </Box>
 
-              <TableContainer sx={{ maxHeight: 400 }}>
+              <TableContainer sx={{ maxHeight: 'calc(100vh - 280px)' }}>
                 {loadingPendientes ? (
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
                     <CircularProgress size={40} />
@@ -405,109 +388,6 @@ export default function PacotePage() {
                           </TableRow>
                         );
                       })}
-                    </TableBody>
-                  </Table>
-                )}
-              </TableContainer>
-            </Card>
-          </Grid>
-
-          {/* TABLA INFERIOR: ENTREGADOS EN EL DÍA */}
-          <Grid size={12}>
-            <Card 
-              elevation={2} 
-              sx={{ 
-                borderRadius: 4, 
-                border: '1px solid rgba(25, 118, 210, 0.08)',
-                overflow: 'hidden'
-              }}
-            >
-              <Box 
-                sx={{ 
-                  p: 3, 
-                  backgroundColor: '#ffffff', 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  borderBottom: '1px solid rgba(0, 0, 0, 0.06)'
-                }}
-              >
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a365d' }}>
-                    ÚLTIMOS ENTREGADOS EN EL DÍA
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Historial en tiempo real de los despachos completados hoy.
-                  </Typography>
-                </Box>
-                <Chip 
-                  label={entregados.length} 
-                  color="success" 
-                  sx={{ fontWeight: 'bold', px: 1 }} 
-                  size="medium"
-                />
-              </Box>
-
-              <TableContainer sx={{ maxHeight: 400 }}>
-                {loadingEntregados ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 8 }}>
-                    <CircularProgress size={40} />
-                    <Typography sx={{ ml: 2, color: 'text.secondary' }}>Cargando historial...</Typography>
-                  </Box>
-                ) : entregados.length === 0 ? (
-                  <Box sx={{ py: 8, textAlign: 'center', color: 'text.secondary' }}>
-                    <InfoIcon sx={{ fontSize: 48, color: 'text.disabled', mb: 1.5 }} />
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                      No hay entregas registradas hoy
-                    </Typography>
-                    <Typography variant="body2">
-                      Los paquetes despachados el día de hoy figurarán en esta sección.
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Table stickyHeader sx={{ minWidth: 650 }}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }} align="center">Nro</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Cliente</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Factura</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }} align="center">Nro. PreVenta</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Fecha/Hora</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }} align="right">Total</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Vendedor/a</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Entregado por</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#f8fafc' }}>Fecha Ent.</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {entregados.map((row, index) => (
-                        <TableRow key={row.idPreVenta + '-entregado'} hover>
-                          <TableCell align="center" sx={{ fontWeight: 600 }}>{row.Nro}</TableCell>
-                          <TableCell sx={{ fontWeight: 500 }}>{row.cliente || '-'}</TableCell>
-                          <TableCell>{row.factura || '-'}</TableCell>
-                          <TableCell align="center">
-                            <Chip 
-                              label={row.idPreVenta} 
-                              size="small" 
-                              sx={{ fontWeight: 600, borderRadius: '6px', backgroundColor: '#e8f5e9', color: '#2e7d32', border: '1px solid #c8e6c9' }} 
-                            />
-                          </TableCell>
-                          <TableCell>{formatDate(row.fechaAlta)}</TableCell>
-                          <TableCell align="right" sx={{ fontWeight: 'bold' }}>
-                            {formatCurrency(row.totalVenta)}
-                          </TableCell>
-                          <TableCell sx={{ color: 'text.secondary' }}>{row.vendedor || '-'}</TableCell>
-                          <TableCell sx={{ fontWeight: 500 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <CheckCircleIcon sx={{ fontSize: 16, color: '#4caf50' }} />
-                              {row.entregaPor || 'Usuario'}
-                            </Box>
-                          </TableCell>
-                          <TableCell sx={{ color: '#1565c0', fontWeight: 500 }}>
-                            {formatDate(row.fechaEntrega || '')}
-                          </TableCell>
-                        </TableRow>
-                      ))}
                     </TableBody>
                   </Table>
                 )}

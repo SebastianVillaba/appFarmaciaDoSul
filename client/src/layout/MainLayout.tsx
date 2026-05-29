@@ -2,7 +2,9 @@ import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import CabinIcon from '@mui/icons-material/Cabin';
 import LogoutIcon from '@mui/icons-material/Logout';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import type { KeyboardEvent, MouseEvent } from 'react';
@@ -10,7 +12,9 @@ import { useUser } from '../hooks/useUser';
 
 const menuItems = [
     { label: 'Home', path: '/', icon: <HomeIcon /> },
-    { label: 'Entrega de Paquetes', path: '/pacote', icon: <LocalShippingIcon /> }
+    { label: 'Entrega de Paquetes', path: '/pacote', icon: <LocalShippingIcon /> },
+    { label: 'Consulta de Stock', path: '/stock', icon: <InventoryIcon /> },
+    { label: 'Paquetes Entregados', path: '/pacote-entregado', icon: <CabinIcon /> }
 ];
 
 const Layout = () => {

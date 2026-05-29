@@ -23,7 +23,7 @@ export const consultaStockByCodigo = async (req: Request, res: Response):Promise
             isStoredProcedure:false
         }).then(res=>res.recordset[0].idDeposito);
         const result = await executeRequest({
-            query: `select p.idProducto,p.codigo,p.nombreProducto,presentacion,precio,SUM(s.cantidad) as stock from producto p inner join stock s
+            query: `select p.idProducto,rtrim(p.codigo) as codigo,rtrim(p.nombreProducto) as nombreProducto,rtrim(p.presentacion) as presentacion,precio,SUM(s.cantidad) as stock from producto p inner join stock s
                     on p.idProducto=s.idProducto
                     where p.codigo=${termino} and s.idDeposito=${idDeposito}
                     group by p.idProducto,p.codigo,p.nombreProducto,presentacion,precio`,
@@ -60,7 +60,7 @@ export const consultaStockByCodigoBarra = async (req: Request, res: Response):Pr
         }).then(res=>res.recordset[0].idDeposito);
 
         const result = await executeRequest({
-            query: `select p.idProducto,p.codigo,p.nombreProducto,presentacion,precio,SUM(s.cantidad) as stock from producto p inner join stock s
+            query: `select p.idProducto,rtrim(p.codigo) as codigo,rtrim(p.nombreProducto) as nombreProducto,rtrim(p.presentacion) as presentacion,precio,SUM(s.cantidad) as stock from producto p inner join stock s
                     on p.idProducto=s.idProducto
                     where p.codigoBarra=${termino} and s.idDeposito=${idDeposito}
                     group by p.idProducto,p.codigo,p.nombreProducto,presentacion,precio`,
