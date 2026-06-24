@@ -1,5 +1,5 @@
 import api from './api';
-import type { DetallePacote } from '../types/Pacote/Pacote.type';
+import type { DetallePacote } from '../types/Pacote/pacote.type';
 
 export interface PacotePendiente {
   idPreVenta: number;

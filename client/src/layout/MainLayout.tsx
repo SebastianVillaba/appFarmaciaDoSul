@@ -5,23 +5,42 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CabinIcon from '@mui/icons-material/Cabin';
 import LogoutIcon from '@mui/icons-material/Logout';
 import InventoryIcon from '@mui/icons-material/Inventory';
-import { useState } from 'react';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { useUser } from '../hooks/useUser';
+import { ventaService } from '../services/ventaService';
 
 const menuItems = [
     { label: 'Home', path: '/', icon: <HomeIcon /> },
     { label: 'Entrega de Paquetes', path: '/pacote', icon: <LocalShippingIcon /> },
     { label: 'Consulta de Stock', path: '/stock', icon: <InventoryIcon /> },
-    { label: 'Paquetes Entregados', path: '/pacote-entregado', icon: <CabinIcon /> }
+    { label: 'Paquetes Entregados', path: '/pacote-entregado', icon: <CabinIcon /> },
+    { label: 'Reporte de Ventas', path: '/venta', icon: <AssessmentIcon /> }
 ];
 
 const Layout = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const { logout } = useUser();
+    const { logout, idUsuario } = useUser();
+
+    useEffect(() => {
+        if (idUsuario) {
+            ventaService.checkAdmin(idUsuario)
+                .then(res => setIsAdmin(res.isAdmin))
+                .catch(() => setIsAdmin(false));
+        } else {
+            setIsAdmin(false);
+        }
+    }, [idUsuario]);
+
+    const filteredMenuItems = menuItems.filter(item => {
+        if (item.path === '/venta') return isAdmin;
+        return true;
+    });
 
     const toggleDrawer = (open: boolean) => (event: KeyboardEvent | MouseEvent) => {
         if (event.type === 'keydown' && ((event as KeyboardEvent).key === 'Tab' || (event as KeyboardEvent).key === 'Shift')) {
@@ -81,7 +100,7 @@ const Layout = () => {
                     <Divider />
                     <Box sx={{ flexGrow: 1 }}>
                         <List>
-                            {menuItems.map((item) => (
+                            {filteredMenuItems.map((item) => (
                                 <ListItem key={item.path} disablePadding>
                                     <ListItemButton
                                         onClick={() => handleMenuClick(item.path)}

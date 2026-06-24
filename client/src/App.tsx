@@ -7,6 +7,7 @@ import PacotePage from "./pages/Pacote/PacotePage";
 import StockPage from "./pages/Stock/StockPage";
 import { useUser } from "./hooks/useUser";
 import { PacoteEntregado } from "./pages/Pacote/PacoteEntregado";
+import VentaPage from "./pages/Venta/VentaPage";
 
 const ProtectedRoute = () => {
   const { idUsuario } = useUser();
@@ -29,6 +30,7 @@ function App() {
             <Route path="/pacote" element={<PacotePage />} />
             <Route path="/pacote-entregado" element={<PacoteEntregado />} />
             <Route path="/stock" element={<StockPage />} />
+            <Route path="/venta" element={<VentaPage />} />
           </Route>
         </Route>
 

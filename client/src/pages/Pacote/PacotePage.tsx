@@ -29,25 +29,24 @@ import InfoIcon from '@mui/icons-material/Info';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { useUser } from '../../hooks/useUser';
-import { pacoteService, type PacotePendiente, type PacoteEntregado } from '../../services/pacoteService';
+import { pacoteService, type PacotePendiente } from '../../services/pacoteService';
 import { ModalDetPacote } from '../../components/ModalDetPacote';
-import type { DetallePacote } from '../../types/Pacote/Pacote.type';
+import type { DetallePacote } from '../../types/Pacote/pacote.type';
 
 export default function PacotePage() {
   const { idSucursal, idUsuario } = useUser();
 
   // Estados de datos
   const [pendientes, setPendientes] = useState<PacotePendiente[]>([]);
-  const [entregados, setEntregados] = useState<PacoteEntregado[]>([]);
   
   // Estados para el detalle de paquete
   const [openDetalle, setOpenDetalle] = useState(false);
   const [detalleData, setDetalleData] = useState<DetallePacote[]>([]);
-  const [loadingDetalle, setLoadingDetalle] = useState(false);
+  const [, setLoadingDetalle] = useState(false);
   
   // Estados de carga
   const [loadingPendientes, setLoadingPendientes] = useState(false);
-  const [loadingEntregados, setLoadingEntregados] = useState(false);
+  const [loadingEntregados] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -367,7 +366,7 @@ export default function PacotePage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {pendientes.map((row, index) => {
+                      {pendientes.map((row) => {
                         const isSelected = selectedPacote?.idPreVenta === row.idPreVenta;
                         return (
                           <TableRow

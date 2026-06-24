@@ -7,7 +7,6 @@ import {
   CircularProgress,
   Container,
   Grid,
-  IconButton,
   Snackbar,
   Alert,
   Table,
@@ -17,21 +16,19 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Tooltip,
-  Zoom
+  Tooltip
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import InfoIcon from '@mui/icons-material/Info';
 import { useUser } from '../../hooks/useUser';
-import { pacoteService } from '../../services/pacoteService';
+import { pacoteService, type PacoteEntregado as PacoteEntregadoType } from '../../services/pacoteService';
 import CabinIcon from '@mui/icons-material/Cabin';
 
 
 export const PacoteEntregado = () => {
-    const { idSucursal, idUsuario } = useUser();
-    const [ entregados, setEntregados ] = useState([]);
+    const { idSucursal } = useUser();
+    const [ entregados, setEntregados ] = useState<PacoteEntregadoType[]>([]);
     const [ loading, setLoading ] = useState(false);
 
     const [ refreshing, setRefreshing ] = useState(false);
@@ -250,7 +247,7 @@ export const PacoteEntregado = () => {
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                            {entregados.map((row, index) => (
+                            {entregados.map((row) => (
                                 <TableRow key={row.idPreVenta + '-entregado'} hover>
                                 <TableCell align="center" sx={{ fontWeight: 600 }}>{row.Nro}</TableCell>
                                 <TableCell sx={{ fontWeight: 500 }}>{row.cliente || '-'}</TableCell>
