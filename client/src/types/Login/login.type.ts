@@ -23,4 +23,17 @@ export interface LoginResponse {
     idSucursal: number;
   };
   vendedor?: VendedorData;
+  // Segundo factor: la contraseña fue correcta pero falta el código
+  requires2FA?: boolean;
+  requiresEnrollment?: boolean;
+  tempToken?: string;
+}
+
+export interface TwoFactorSetupResponse {
+  qrDataUrl: string;
+  manualKey: string;
+}
+
+export interface EnableTwoFactorResponse extends LoginResponse {
+  recoveryCodes: string[];
 }

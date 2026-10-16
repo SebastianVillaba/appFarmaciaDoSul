@@ -2,12 +2,7 @@ import { Request, Response } from "express";
 import { executeRequest, sql } from "../utils/dbHandler";
 
 export const consultaEntregaPacotePendiente = async (req: Request, res: Response):Promise<void> => {
-    const { idSucursal } = req.body;
-
-    if (!idSucursal) {
-        res.status(400).json({ message: "idSucursal es obligatorio" });
-        return;
-    }
+    const { idSucursal } = req.user!;
 
     try {
         const result = await executeRequest({
@@ -30,12 +25,7 @@ export const consultaEntregaPacotePendiente = async (req: Request, res: Response
 }
 
 export const consultaEntregadosPacote = async (req: Request, res: Response): Promise<void> => {
-    const { idSucursal } = req.body;
-
-    if (!idSucursal) {
-        res.status(400).json({ message: "idSucursal es obligatorio" });
-        return;
-    }
+    const { idSucursal } = req.user!;
 
     try {
         const result = await executeRequest({
@@ -58,10 +48,11 @@ export const consultaEntregadosPacote = async (req: Request, res: Response): Pro
 }
 
 export const guardarEntregaPacote = async (req: Request, res: Response): Promise<void> => {
-    const { idSucursal, idPreVenta, idUsuario } = req.body;
+    const { idSucursal, idUsuario } = req.user!;
+    const { idPreVenta } = req.body;
 
-    if (!idSucursal || !idPreVenta || !idUsuario) {
-        res.status(400).json({ message: "idSucursal, idPreVenta e idUsuario son obligatorios" });
+    if (!idPreVenta) {
+        res.status(400).json({ message: "idPreVenta es obligatorio" });
         return;
     }
 

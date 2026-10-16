@@ -13,7 +13,8 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
-    if (token) {
+    // Las llamadas del 2FA envían su propio token temporal
+    if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -27,8 +28,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Si el token es inválido o expiró, redirigir al login (excepto para el endpoint de login)
-    if ((error.response?.status === 401 || error.response?.status === 403) && !error.config?.url?.includes('/auth/login')) {
+    // Si el token es inválido o expiró, redirigir al login (excepto para los endpoints de login / 2FA)
+    if ((error.response?.status === 401 || error.response?.status === 403) && !error.config?.url?.includes('/auth/')) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       window.location.href = '/login';

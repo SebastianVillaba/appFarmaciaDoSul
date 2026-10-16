@@ -48,30 +48,7 @@ export const getFiltros = async (req: Request, res: Response): Promise<void> => 
  * Verificar si el usuario actual es administrador
  */
 export const checkAdmin = async (req: Request, res: Response): Promise<void> => {
-  const { idUsuario } = req.query;
-
-  if (!idUsuario) {
-    res.status(400).json({ message: "idUsuario es requerido" });
-    return;
-  }
-
-  try {
-    const result = await executeRequest({
-      query: `SELECT administrador FROM usuario WHERE idUsuario = ${idUsuario}`,
-      isStoredProcedure: false
-    });
-
-    if (result.recordset.length === 0) {
-      res.json({ isAdmin: false });
-      return;
-    }
-
-    const isAdmin = result.recordset[0].administrador === true || result.recordset[0].administrador === 1;
-    res.json({ isAdmin });
-  } catch (error) {
-    console.error("Error en checkAdmin:", error);
-    res.status(500).json({ message: "Error interno al verificar permisos" });
-  }
+  res.json({ isAdmin: !!req.user?.administrador });
 };
 
 /**
@@ -79,12 +56,8 @@ export const checkAdmin = async (req: Request, res: Response): Promise<void> => 
  * Llama a sp_cargarTmpVentaInfo y luego sp_consultaTmpVentaInfo.
  */
 export const consultarVentas = async (req: Request, res: Response): Promise<void> => {
-  const { idUsuario, idGrupoCliente, idVendedor, idLaboratorio, desde, hasta } = req.body;
-
-  if (!idUsuario) {
-    res.status(400).json({ message: "idUsuario (idConfig) es obligatorio" });
-    return;
-  }
+  const { idUsuario } = req.user!;
+  const { idGrupoCliente, idVendedor, idLaboratorio, desde, hasta } = req.body;
 
   try {
     const formattedDesde = new Date(desde);
