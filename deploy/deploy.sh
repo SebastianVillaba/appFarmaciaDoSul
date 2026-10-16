@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Actualiza la app en el servidor: trae los cambios, compila y reinicia.
-# Uso: bash /var/www/appFarmaciaDoSul/deploy/deploy.sh
+# Uso: bash ~/appFarmaciaDoSul/deploy/deploy.sh
 set -euo pipefail
 
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
