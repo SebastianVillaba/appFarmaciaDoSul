@@ -15,7 +15,7 @@ module.exports = {
       time: true,
       env: {
         NODE_ENV: 'production',
-        PORT: 4000,
+        PORT: 4010,
         HOST: '127.0.0.1',
         TRUST_PROXY: 'true',
       },
