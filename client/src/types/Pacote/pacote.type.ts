@@ -1,5 +1,5 @@
 export interface DetallePacote {
-    idDetPreventa: number;
+    idDetPreVenta: number;
     nombreProducto: string;
     cantidad: number;
     precio: number;

@@ -92,7 +92,7 @@ export const ModalDetPacote = ({ open, handleCloseModal, detalle }: ModalDetPaco
                                 </TableRow>
                             ) : (
                                 detalle.map((row) => (
-                                    <TableRow key={row.idDetPreventa} hover>
+                                    <TableRow key={row.idDetPreVenta} hover>
                                         <TableCell sx={{ fontWeight: 500 }}>{row.nombreProducto}</TableCell>
                                         <TableCell align="center">{row.cantidad}</TableCell>
                                         <TableCell align="right">

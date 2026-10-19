@@ -86,7 +86,22 @@ export const guardarEntregaPacote = async (req: Request, res: Response): Promise
     }
 }
 
+// En la sucursal 11 no se usa preventa: el "idPreVenta" que devuelve
+// funEntregaPacotePendiente_tabla es en realidad el idVenta (igual que en sp_guardarEntregaPacote)
+const queryDetalleVenta = `
+    select
+    dv.idDetVenta as idDetPreVenta,
+    CASE
+        WHEN p.presentacion<>'' THEN p.nombreProducto + ' ' + '(' + p.presentacion + ')'
+        ELSE p.nombreProducto
+    END AS nombreProducto,
+    dv.cantidad, dv.precioDescuento as precio, dv.subtotal
+    from detVenta dv inner join producto p
+    on dv.idProducto=p.idProducto
+    where dv.idVenta=@idPreVenta`;
+
 export const consultaDetallePacote = async (req: Request, res: Response): Promise<void> => {
+    const { idSucursal } = req.user!;
     const { idPreVenta } = req.query;
 
     if (!idPreVenta) {
@@ -96,7 +111,7 @@ export const consultaDetallePacote = async (req: Request, res: Response): Promis
 
     try {
         const result = await executeRequest({
-            query: `select * from [funVerDetPreventa](@idPreVenta)`,
+            query: idSucursal === 11 ? queryDetalleVenta : `select * from [funVerDetPreventa](@idPreVenta)`,
             isStoredProcedure: false,
             inputs: [
                 {
