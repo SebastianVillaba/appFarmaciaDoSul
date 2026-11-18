@@ -9,6 +9,8 @@ export interface AuthUser {
   idSucursal: number;
   administrador: boolean;
   stage: AuthStage;
+  /** Nombre de usuario con el que inició sesión; se usa como etiqueta en la app autenticadora. */
+  nick?: string;
 }
 
 declare global {
@@ -28,7 +30,7 @@ const TOKEN_TTL: Record<AuthStage, string> = {
 
 export const signToken = (user: Omit<AuthUser, "stage">, stage: AuthStage): string =>
   jwt.sign(
-    { idUsuario: user.idUsuario, idSucursal: user.idSucursal, administrador: user.administrador, stage },
+    { idUsuario: user.idUsuario, idSucursal: user.idSucursal, administrador: user.administrador, nick: user.nick, stage },
     env.JWT_SECRET,
     { expiresIn: TOKEN_TTL[stage] as jwt.SignOptions["expiresIn"], algorithm: "HS256" }
   );

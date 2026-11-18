@@ -82,7 +82,17 @@ export default function LoginPage(): JSX.Element {
 
 
   if (step === 'verify') {
-    return <TwoFactorVerify tempToken={tempToken} onSuccess={completeLogin} onCancel={backToCredentials} />;
+    return (
+      <TwoFactorVerify
+        tempToken={tempToken}
+        onSuccess={completeLogin}
+        onRescan={(enrollToken) => {
+          setTempToken(enrollToken);
+          setStep('enroll');
+        }}
+        onCancel={backToCredentials}
+      />
+    );
   }
 
   if (step === 'enroll') {

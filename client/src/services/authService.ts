@@ -39,6 +39,12 @@ export const authService = {
     return response.data;
   },
 
+  // 2FA: volver a escanear el QR (consume un código de recuperación y devuelve un token de enrolamiento)
+  rescan2FA: async (tempToken: string, recoveryCode: string): Promise<{ tempToken: string }> => {
+    const response = await api.post<{ tempToken: string }>('/auth/2fa/rescan', { recoveryCode }, withTempToken(tempToken));
+    return response.data;
+  },
+
   // Logout
   logout: () => {
     localStorage.removeItem('authToken');

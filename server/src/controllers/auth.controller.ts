@@ -66,7 +66,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      const user = { idUsuario, idSucursal, administrador: usuario2FA.administrador };
+      // El nick ya fue validado por el SP; se usa como etiqueta en la app autenticadora
+      const user = { idUsuario, idSucursal, administrador: usuario2FA.administrador, nick: String(username).trim() };
 
       // La contraseña es correcta, pero la sesión solo se emite tras el segundo factor
       if (usuario2FA.totpHabilitado) {
@@ -86,7 +87,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 /** Etapa enroll: genera el secreto TOTP y devuelve el QR. */
 export const setup2FA = async (req: Request, res: Response): Promise<void> => {
   try {
-    const data = await iniciarEnrolamiento(req.user!.idUsuario);
+    const data = await iniciarEnrolamiento(req.user!.idUsuario, req.user!.nick);
     if (!data) {
       res.status(409).json({ message: "El 2FA ya está activado para este usuario" });
       return;
@@ -143,6 +144,26 @@ export const recovery2FA = async (req: Request, res: Response): Promise<void> =>
     res.json(sessionResponse(user));
   } catch (error) {
     console.error("Error en recovery2FA:", error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
+};
+
+/**
+ * Etapa mfa: volver a escanear el QR (cambio de teléfono, cuenta equivocada en la app).
+ * Exige un código de recuperación para que la contraseña sola no alcance para saltear el 2FA.
+ */
+export const rescan2FA = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = req.user!;
+    const result = await usarCodigoRecuperacion(user.idUsuario, req.body.recoveryCode);
+    if (result !== "ok") {
+      responderFallo(res, result);
+      return;
+    }
+    await resetear2FA(user.idUsuario);
+    res.json({ success: true, tempToken: signToken(user, "enroll") });
+  } catch (error) {
+    console.error("Error en rescan2FA:", error);
     res.status(500).json({ message: "Error en el servidor" });
   }
 };

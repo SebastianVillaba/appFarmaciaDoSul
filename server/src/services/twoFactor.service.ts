@@ -40,7 +40,8 @@ export const getUsuario2FA = async (idUsuario: number): Promise<Usuario2FA | nul
 
 /** Genera un secreto nuevo (solo si el 2FA todavía no está habilitado) y devuelve el QR. */
 export const iniciarEnrolamiento = async (
-  idUsuario: number
+  idUsuario: number,
+  nick?: string
 ): Promise<{ qrDataUrl: string; manualKey: string } | null> => {
   const secret = authenticator.generateSecret(20);
   const result = await executeRequest({
@@ -50,7 +51,8 @@ export const iniciarEnrolamiento = async (
   });
   if (result.rowsAffected[0] === 0) return null;
 
-  const uri = authenticator.keyuri(`Usuario ${idUsuario}`, ISSUER, secret);
+  // La etiqueta es lo que muestra Google Authenticator junto al emisor
+  const uri = authenticator.keyuri(nick || `Usuario ${idUsuario}`, ISSUER, secret);
   const qrDataUrl = await QRCode.toDataURL(uri);
   return { qrDataUrl, manualKey: secret };
 };
