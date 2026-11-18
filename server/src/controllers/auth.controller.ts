@@ -150,16 +150,11 @@ export const recovery2FA = async (req: Request, res: Response): Promise<void> =>
 
 /**
  * Etapa mfa: volver a escanear el QR (cambio de teléfono, cuenta equivocada en la app).
- * Exige un código de recuperación para que la contraseña sola no alcance para saltear el 2FA.
+ * Por decisión del negocio basta con la contraseña: no exige código de la app ni de recuperación.
  */
 export const rescan2FA = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = req.user!;
-    const result = await usarCodigoRecuperacion(user.idUsuario, req.body.recoveryCode);
-    if (result !== "ok") {
-      responderFallo(res, result);
-      return;
-    }
     await resetear2FA(user.idUsuario);
     res.json({ success: true, tempToken: signToken(user, "enroll") });
   } catch (error) {
