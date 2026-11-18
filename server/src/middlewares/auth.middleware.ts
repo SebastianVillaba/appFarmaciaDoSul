@@ -20,7 +20,8 @@ declare global {
 }
 
 const TOKEN_TTL: Record<AuthStage, string> = {
-  full: "30m",
+  // Cubre una jornada laboral completa (turno + margen) sin volver a pedir el 2FA
+  full: "10h",
   mfa: "5m",
   enroll: "10m",
 };
